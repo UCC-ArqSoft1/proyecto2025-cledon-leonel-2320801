@@ -15,6 +15,18 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="navbar-content">
                 <Link to="/" className="navbar-brand">
+                    <img
+                        src="/logo192.png"
+                        alt="Gimnasio Logo"
+                        style={{
+                            width: '40px',
+                            height: '40px',
+                            marginRight: '12px',
+                            verticalAlign: 'middle',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 8px rgba(255,255,255,0.2)'
+                        }}
+                    />
                     🏋️‍♂️ Gimnasio
                 </Link>
 
