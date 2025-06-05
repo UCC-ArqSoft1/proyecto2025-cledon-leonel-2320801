@@ -1,0 +1,62 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: gym_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: proyecto_gym_db
+      MYSQL_USER: gym_user
+      MYSQL_PASSWORD: gym_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - gym_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gym_backend
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: gym_user
+      DB_PASSWORD: gym_password
+      DB_NAME: proyecto_gym_db
+      PORT: 8080
+      JWT_SECRET: proyecto_gym_secreto_jwt_2024
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - gym_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gym_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - gym_network
+
+volumes:
+  mysql_data:
+
+networks:
+  gym_network:
+    driver: bridge
